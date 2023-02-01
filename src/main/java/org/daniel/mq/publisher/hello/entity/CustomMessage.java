@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message implements Serializable {
+public class CustomMessage implements Serializable {
     private String message;
     private String name;
 }

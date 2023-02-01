@@ -6,3 +6,6 @@ spring:
     port: 5672
     username: daniel
     password: daniel
+logging:
+  level:
+    org.daniel.mq: DEBUG

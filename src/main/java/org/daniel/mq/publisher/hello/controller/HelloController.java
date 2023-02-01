@@ -3,7 +3,7 @@ package org.daniel.mq.publisher.hello.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.daniel.mq.publisher.hello.constant.HelloQueue;
-import org.daniel.mq.publisher.hello.entity.Message;
+import org.daniel.mq.publisher.hello.entity.CustomMessage;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +20,8 @@ public class HelloController {
     @GetMapping
     public String hello(@RequestParam(required = false, defaultValue = "daniel") String name, @RequestParam(required = false, defaultValue = "hello world!") String message){
         try {
-            rabbitTemplate.convertAndSend(HelloQueue.HELLO.getExchange(), HelloQueue.HELLO.getRoutingKey(), Message.builder().name(name).message(message).build());
+            log.debug("send queue: name={}, message={}", name, message);
+            rabbitTemplate.convertAndSend(HelloQueue.HELLO.getExchange(), HelloQueue.HELLO.getRoutingKey(), CustomMessage.builder().name(name).message(message).build());
         }catch (Exception ex){
             log.warn("mq send fail: {}", ex.getMessage(), ex);
         }
