@@ -28,19 +28,22 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.virtual:/}")
     private String virtualHost;
 
+    //default queue
     @Bean
     Queue queue() {
-        return new Queue(HelloQueue.HELLO.getName(), false);
+        return new Queue(HelloQueue.class.getName(), false);
     }
 
+    //default exchange
     @Bean
     DirectExchange exchange() {
-        return new DirectExchange(HelloQueue.HELLO.getExchange());
+        return new DirectExchange(HelloQueue.WORLD_EXCHANGE.getName());
     }
 
+    //default binding
     @Bean
     Binding binding(DirectExchange directExchange, Queue queue) {
-        return BindingBuilder.bind(queue).to(directExchange).with(HelloQueue.HELLO.getRoutingKey());
+        return BindingBuilder.bind(queue).to(directExchange).with(HelloQueue.WORLD_EXCHANGE.getRoutingKey());
     }
 
     @Bean

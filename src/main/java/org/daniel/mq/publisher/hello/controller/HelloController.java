@@ -17,14 +17,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     private final RabbitTemplate rabbitTemplate;
 
-    @GetMapping
-    public String hello(@RequestParam(required = false, defaultValue = "daniel") String name, @RequestParam(required = false, defaultValue = "hello world!") String message){
+    @GetMapping("/world")
+    public CustomMessage world(@RequestParam(required = false, defaultValue = "daniel") String name, @RequestParam(required = false, defaultValue = "hello world!") String message){
+        var customMessage = CustomMessage.builder().name(name).message(message).build();
         try {
-            log.debug("send queue: name={}, message={}", name, message);
-            rabbitTemplate.convertAndSend(HelloQueue.HELLO.getExchange(), HelloQueue.HELLO.getRoutingKey(), CustomMessage.builder().name(name).message(message).build());
+            log.debug("send world exchange: name={}, message={}", name, message);
+            rabbitTemplate.convertAndSend(HelloQueue.WORLD_EXCHANGE.name(), HelloQueue.WORLD_EXCHANGE.getRoutingKey(), customMessage);
         }catch (Exception ex){
-            log.warn("mq send fail: {}", ex.getMessage(), ex);
+            log.warn("send world exchange fail: {}", ex.getMessage(), ex);
         }
-        return String.format("Hi, %s sir, send Queue: %s", name, message);
+        return customMessage;
+    }
+
+    @GetMapping("/rabbit")
+    public CustomMessage rabbit(@RequestParam(required = false, defaultValue = "daniel") String name, @RequestParam(required = false, defaultValue = "hello world!") String message){
+        var customMessage = CustomMessage.builder().name(name).message(message).build();
+        try {
+            log.debug("send rabbit exchange: name={}, message={}", name, message);
+            rabbitTemplate.convertAndSend(HelloQueue.RABBIT_EXCHANGE.name(), HelloQueue.RABBIT_EXCHANGE.getRoutingKey(), customMessage);
+        }catch (Exception ex){
+            log.warn("send rabbit exchange fail: {}", ex.getMessage(), ex);
+        }
+        return customMessage;
     }
 }
