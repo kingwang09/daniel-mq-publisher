@@ -32,7 +32,7 @@ public class RabbitMQConfig {
     //default queue
     @Bean
     Queue helloQueue() {
-        return new Queue(HelloQueue.class.getName(), false);
+        return new Queue(HelloQueue.class.getSimpleName(), false);
     }
 
     //default exchange
