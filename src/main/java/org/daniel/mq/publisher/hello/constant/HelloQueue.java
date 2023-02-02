@@ -6,12 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum HelloQueue {
-    WORLD_EXCHANGE( "world.exchange", "world.key"),
-    RABBIT_EXCHANGE( "rabbit.exchange", "rabbit.key");
+    WORLD_EXCHANGE( "world.key"),
+    RABBIT_EXCHANGE( "rabbit.key");
 
-    private final String queueName = "hello.queue";
-
-    private String name;
 
     private String routingKey;
 }

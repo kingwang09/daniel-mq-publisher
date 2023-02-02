@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,20 +31,28 @@ public class RabbitMQConfig {
 
     //default queue
     @Bean
-    Queue queue() {
+    Queue helloQueue() {
         return new Queue(HelloQueue.class.getName(), false);
     }
 
     //default exchange
     @Bean
-    DirectExchange exchange() {
-        return new DirectExchange(HelloQueue.WORLD_EXCHANGE.getName());
+    DirectExchange worldExchange() {
+        return new DirectExchange(HelloQueue.WORLD_EXCHANGE.toString());
+    }
+    @Bean
+    DirectExchange rabbitExchange() {
+        return new DirectExchange(HelloQueue.RABBIT_EXCHANGE.toString());
     }
 
     //default binding
     @Bean
-    Binding binding(DirectExchange directExchange, Queue queue) {
+    Binding worldQueueBinding(@Qualifier("worldExchange") DirectExchange directExchange, @Qualifier("helloQueue") Queue queue) {
         return BindingBuilder.bind(queue).to(directExchange).with(HelloQueue.WORLD_EXCHANGE.getRoutingKey());
+    }
+    @Bean
+    Binding rabbitQueueBinding(@Qualifier("rabbitExchange") DirectExchange directExchange, @Qualifier("helloQueue") Queue queue) {
+        return BindingBuilder.bind(queue).to(directExchange).with(HelloQueue.RABBIT_EXCHANGE.getRoutingKey());
     }
 
     @Bean
