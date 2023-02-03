@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -19,7 +21,7 @@ public class HelloController {
 
     @GetMapping("/world")
     public CustomMessage world(@RequestParam(required = false, defaultValue = "daniel") String name, @RequestParam(required = false, defaultValue = "hello world!") String message){
-        var customMessage = CustomMessage.builder().name(name).message(message).build();
+        var customMessage = CustomMessage.builder().name(name).message(message).registeredAt(LocalDateTime.now()).build();
         try {
             log.debug("send world exchange: name={}, message={}", name, message);
             rabbitTemplate.convertAndSend(HelloQueue.WORLD_EXCHANGE.name(), HelloQueue.WORLD_EXCHANGE.getRoutingKey(), customMessage);
